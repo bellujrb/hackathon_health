@@ -1,0 +1,267 @@
+definitions:
+  db.User:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      risk:
+        type: string
+    type: object
+  interfaces.Question:
+    properties:
+      answer:
+        type: string
+      clue:
+        type: string
+    type: object
+  interfaces.Responses:
+    properties:
+      mark:
+        type: boolean
+    type: object
+  interfaces.SwaggerQuestion:
+    properties:
+      question:
+        items:
+          $ref: '#/definitions/interfaces.Question'
+        type: array
+    type: object
+  interfaces.SwaggerResponses:
+    properties:
+      responses:
+        items:
+          $ref: '#/definitions/interfaces.Responses'
+        type: array
+      user_id:
+        type: integer
+    type: object
+  interfaces.User:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      risk:
+        type: string
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a server for app.
+  title: Chat
+  version: "1.0"
+paths:
+  /api/all-user:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all User
+      parameters:
+      - default: Bearer <token>
+        description: Auth Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of All User
+          schema:
+            $ref: '#/definitions/db.User'
+      summary: Retrieve All User
+      tags:
+      - User
+  /api/questions:
+    get:
+      consumes:
+      - application/json
+      description: Found All Questions
+      parameters:
+      - default: Bearer <token>
+        description: Auth Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of All User
+          schema:
+            $ref: '#/definitions/interfaces.SwaggerQuestion'
+      summary: Found All Questions
+      tags:
+      - Questions
+    post:
+      consumes:
+      - application/json
+      description: Create marks questions
+      parameters:
+      - description: Data for marks questions :)
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/interfaces.SwaggerResponses'
+      - default: Bearer <token>
+        description: Auth Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of All Questions
+          schema:
+            type: string
+      summary: Create marks questions
+      tags:
+      - Questions
+  /api/test-token:
+    post:
+      consumes:
+      - application/json
+      description: Cria um toke para auth do usuario
+      parameters:
+      - default: Bearer <token>
+        description: Token de autenticação
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'token make:'
+          schema:
+            type: string
+      summary: Test Token
+      tags:
+      - Auth
+  /api/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Uploads a PDF file, extracts its text, and saves the extracted
+        text
+      parameters:
+      - description: PDF file
+        in: formData
+        name: pdf
+        required: true
+        type: file
+      - default: Bearer <token>
+        description: Auth Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Upload a PDF file and extract text
+      tags:
+      - PDF
+  /api/user:
+    post:
+      consumes:
+      - application/json
+      description: Create New User
+      parameters:
+      - description: Data for create new User
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/interfaces.User'
+      - default: Bearer <token>
+        description: Auth Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of All User
+          schema:
+            $ref: '#/definitions/db.User'
+      summary: Create New User
+      tags:
+      - User
+  /api/user/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve an User by its ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - default: Bearer <token>
+        description: Auth Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User Details
+          schema:
+            $ref: '#/definitions/db.User'
+      summary: Retrieve User by ID
+      tags:
+      - User
+  /token:
+    get:
+      consumes:
+      - application/json
+      description: Cria um toke para auth do usuario
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'token make:'
+          schema:
+            type: string
+      summary: Criar token de auth
+      tags:
+      - Auth
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"
